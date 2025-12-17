@@ -42,7 +42,7 @@ public class GlobalExceptionHandler {
                 log.error("用户名已存在");
                 return Result.error("用户名已存在");
 
-            // TODO 其他字段重复异常
+            // 其他字段重复异常
             }else {
                 log.error("异常信息：{}", ex.getMessage());
                 return Result.error("服务器异常");
