@@ -1,5 +1,6 @@
 package com.sky.handler;
 
+import com.sky.constant.MessageConstant;
 import com.sky.exception.BaseException;
 import com.sky.result.Result;
 import lombok.extern.slf4j.Slf4j;
@@ -39,13 +40,15 @@ public class GlobalExceptionHandler {
         if (message.contains("Duplicate entry")) {
             // 用户名已存在
             if (message.contains("username")){
-                log.error("用户名已存在");
-                return Result.error("用户名已存在");
-
-            // 其他字段重复异常
-            }else {
                 log.error("异常信息：{}", ex.getMessage());
-                return Result.error("服务器异常");
+                return Result.error(MessageConstant.DUPLICATE_USERNAME);
+
+            } else if (message.contains("setmeal_name")) {
+                log.error("异常信息：{}", ex.getMessage());
+                return Result.error(MessageConstant.DUPLICATE_SETMEAL_NAME);
+            } else {
+                log.error("异常信息：{}", ex.getMessage());
+                return Result.error(MessageConstant.SEVER_ERROR);
             }
 //            String[] split = message.split(" "); // Duplicate entry '乜倩' for key 'employee.idx_username'
 //            String fieldName = split[6];  // 'employee.idx_username'
@@ -54,7 +57,7 @@ public class GlobalExceptionHandler {
 //            return Result.error(msg);
         }else{
             log.error("异常信息：{}", ex.getMessage());
-            return Result.error("服务器异常");
+            return Result.error(MessageConstant.SEVER_ERROR);
         }
     }
 

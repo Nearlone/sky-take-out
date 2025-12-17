@@ -73,16 +73,15 @@ public class DishServiceImpl implements DishService {
         List<Dish> dishes = dishMapper.queryByIds(ids);
 
         List<Long> deletableDishIds = new ArrayList<>();
-        List<String> undeletableDishReasons = new ArrayList<>();
+        List<String> undeletableReasons = new ArrayList<>();
 
         for (Dish dish : dishes) {
             if (dish.getStatus() == StatusConstant.ENABLE) {
-                undeletableDishReasons.add(MessageConstant.DISH_ON_SALE + ": " + dish.getName());
+                undeletableReasons.add(MessageConstant.DISH_ON_SALE + ": " + dish.getName());
                 continue;
             }
-            Long setmealId = setmealDishMapper.findSetmealIdByDishId(dish.getId());
-            if (setmealId != null){
-                undeletableDishReasons.add(MessageConstant.DISH_BE_RELATED_BY_SETMEAL + ": " + dish.getName());
+            if (setmealDishMapper.countSetmealByDishId(dish.getId()) > 0){
+                undeletableReasons.add(MessageConstant.DISH_BE_RELATED_BY_SETMEAL + ": " + dish.getName());
                 continue;
             }
             deletableDishIds.add(dish.getId());
@@ -91,8 +90,8 @@ public class DishServiceImpl implements DishService {
             dishMapper.deleteBatch(deletableDishIds);
             dishFlavorMapper.deleteByDishIds(deletableDishIds);
         }
-        if (!undeletableDishReasons.isEmpty()) {
-            throw new DeletionNotAllowedException(StringUtils.join("; \n", undeletableDishReasons));
+        if (!undeletableReasons.isEmpty()) {
+            throw new DeletionNotAllowedException(StringUtils.join("; \n", undeletableReasons));
         }
 
     }
@@ -128,5 +127,35 @@ public class DishServiceImpl implements DishService {
         dishFlavorMapper.deleteByDishId(dishDTO.getId());
         dishDTO.getFlavors().forEach(dishFlavor -> dishFlavor.setDishId(dish.getId()));
         dishFlavorMapper.insertBatch(dishDTO.getFlavors());
+    }
+
+    /**
+     * 菜品起售停售
+     *
+     * @param status
+     * @param id
+     */
+    @Override
+    public void startOrStop(Integer status, Long id) {
+        // 菜品如果有关联套餐，则不能停售
+        if (setmealDishMapper.countSetmealByDishId(id) > 0) {
+            throw new DeletionNotAllowedException(MessageConstant.DISH_DISABLE_FAILED);
+        }
+        Dish dish = new Dish();
+        dish.setStatus(status);
+        dish.setId(id);
+        dishMapper.update(dish);
+    }
+
+    /**
+     * 根据分类id查询菜品
+     *
+     * @param categoryId
+     * @return
+     */
+    @Override
+    public List<DishVO> listByCategory(Long categoryId) {
+        List<DishVO> dishList = dishMapper.listByCategory(categoryId);
+        return dishList;
     }
 }
