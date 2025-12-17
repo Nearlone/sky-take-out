@@ -23,10 +23,17 @@ import java.time.LocalDateTime;
 @Slf4j
 public class AutoFillAspect {
 
+    /**
+     * 匹配需要拦截的方法
+     */
     @Pointcut("execution(* com.sky.mapper.*.*(..)) && @annotation(com.sky.annotation.AutoFill)")
     public void autoFillPointCut(){
     }
 
+    /**
+     * 填充创建时间、更新时间和创建人、更新人
+     * @param joinPoint
+     */
     @Before("autoFillPointCut()")
     public void autoFill(JoinPoint joinPoint){
         // 获取注解中参数
