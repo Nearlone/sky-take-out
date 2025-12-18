@@ -6,11 +6,11 @@ import java.io.Serializable;
 
 @Data
 public class DishPageQueryDTO implements Serializable {
-
+    // 页码
     private int page;
-
+    // 每页显示数量
     private int pageSize;
-
+    // 菜品名称
     private String name;
 
     //分类id
