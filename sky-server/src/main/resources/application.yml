@@ -36,16 +36,15 @@ logging:
 
 sky:
   jwt:
-    # 设置jwt签名加密时使用的秘钥（管理员）
-    admin-secret-key: nearlone
-    # 设置jwt过期时间
-    admin-ttl: 7200000
-    # 设置前端传递过来的令牌名称
-    admin-token-name: token
-    # 设置jwt签名加密时使用的秘钥（用户）
-    user-secret-key: nearlone
-    user-ttl: 7200000
-    user-token-name: authentication
+    # 管理员端 JWT 配置
+    admin-secret-key: ${sky.jwt.admin-secret-key}
+    admin-ttl: ${sky.jwt.admin-ttl}
+    admin-token-name: ${sky.jwt.admin-token-name}
+
+    # 用户端 JWT 配置
+    user-secret-key: ${sky.jwt.user-secret-key}
+    user-ttl: ${sky.jwt.user-ttl}
+    user-token-name: ${sky.jwt.user-token-name}
   #  设置阿里云配置
   alioss:
     endpoint: ${sky.alioss.endpoint}
