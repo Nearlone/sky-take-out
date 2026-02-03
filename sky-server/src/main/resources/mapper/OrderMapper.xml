@@ -11,4 +11,31 @@
                 #{payStatus}, #{amount}, #{remark}, #{phone}, #{address}, #{consignee},
                 #{estimatedDeliveryTime}, #{deliveryStatus}, #{packAmount}, #{tablewareNumber}, #{tablewareStatus})
     </insert>
+    <update id="update">
+        update orders
+        <set>
+            <if test="number != null">
+                number = #{number},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+            <if test="addressBookId != null">
+                address_book_id = #{addressBookId},
+            </if>
+            <if test="orderTime != null">
+                order_time = #{orderTime},
+            </if>
+            <if test="checkoutTime != null">
+                checkout_time = #{checkoutTime},
+            </if>
+            <if test="payMethod != null"></if>
+        </set>
+    </update>
+    <select id="getByNumberAndUserId" resultType="com.sky.entity.Orders">
+        select * from orders where number = #{outTradeNo} and user_id = #{userId}
+    </select>
 </mapper>
